@@ -8,25 +8,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class DepartmentService {
-
     private final EmployeeService employeeService;
 
     public DepartmentService(EmployeeService employeeService) {
         this.employeeService = employeeService;
-    }
-
-    public Employee getEmployeeWithMaxSalary(int departmentId) {
-        return employeeService.getAllEmployees().stream()
-                .filter(e -> e.getDepartment() == departmentId)
-                .max(Comparator.comparingInt(Employee::getSalary))
-                .orElse(null);
-    }
-
-    public Employee getEmployeeWithMinSalary(int departmentId) {
-        return employeeService.getAllEmployees().stream()
-                .filter(e -> e.getDepartment() == departmentId)
-                .min(Comparator.comparingInt(Employee::getSalary))
-                .orElse(null);
     }
 
     public List<Employee> getEmployeesByDepartment(int departmentId) {
@@ -35,33 +20,31 @@ public class DepartmentService {
                 .collect(Collectors.toList());
     }
 
-    public Map<Integer, List<Employee>> getAllEmployeesGroupedByDepartment() {
-        return employeeService.getAllEmployees().stream()
-                .collect(Collectors.groupingBy(Employee::getDepartment));
-    }
-
-    public void indexSalariesByDepartment(int departmentId, int percent) {
-        employeeService.getAllEmployees().stream()
-                .filter(e -> e.getDepartment() == departmentId)
-                .forEach(e -> {
-                    double multiplier = 1 + (percent / 100.0);
-                    int newSalary = (int) (e.getSalary() * multiplier);
-                    e.setSalary(newSalary);
-                });
-    }
-
-    public double getAverageSalaryByDepartment(int departmentId) {
-        return employeeService.getAllEmployees().stream()
-                .filter(e -> e.getDepartment() == departmentId)
-                .mapToInt(Employee::getSalary)
-                .average()
-                .orElse(0.0);
-    }
-
-    public int getTotalSalaryByDepartment(int departmentId) {
+    public int getSalarySum(int departmentId) {
         return employeeService.getAllEmployees().stream()
                 .filter(e -> e.getDepartment() == departmentId)
                 .mapToInt(Employee::getSalary)
                 .sum();
+    }
+
+    public int getMaxSalary(int departmentId) {
+        return employeeService.getAllEmployees().stream()
+                .filter(e -> e.getDepartment() == departmentId)
+                .mapToInt(Employee::getSalary)
+                .max()
+                .orElse(0);
+    }
+
+    public int getMinSalary(int departmentId) {
+        return employeeService.getAllEmployees().stream()
+                .filter(e -> e.getDepartment() == departmentId)
+                .mapToInt(Employee::getSalary)
+                .min()
+                .orElse(0);
+    }
+
+    public Map<Integer, List<Employee>> getAllEmployeesGroupedByDepartment() {
+        return employeeService.getAllEmployees().stream()
+                .collect(Collectors.groupingBy(Employee::getDepartment));
     }
 }

@@ -31,7 +31,7 @@ public class EmployeeController {
 
     @GetMapping("/{id}")
     public Employee getEmployeeById(@PathVariable int id) {
-        return employeeService.getEmployeeById(id);
+        return employeeService.findEmployeeById(id);
     }
 
     @GetMapping("/average-salary")
